@@ -52,24 +52,24 @@ app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'combined', {
 const orderSchema = Joi.object({
   test: Joi.string().optional(),
   payment: Joi.object({
-    amount: Joi.number().required(),
-    orderid: Joi.string().required(),
+    amount: Joi.number().optional(),
+    orderid: Joi.string().optional(),
     products: Joi.array().items(
         Joi.object({
-          name: Joi.string().required(),
-          quantity: Joi.number().min(1).required(),
-          price: Joi.number().min(0).required(),
-          amount: Joi.number().min(0).required(),
+          name: Joi.string().optional(),
+          quantity: Joi.number().min(1).optional(),
+          price: Joi.number().min(0).optional(),
+          amount: Joi.number().min(0).optional(),
           options: Joi.array().items(
               Joi.object({
-                option: Joi.string().required(),
-                variant: Joi.string().required()
+                option: Joi.string().optional(),
+                variant: Joi.string().optional()
               })
           ).optional()
         })
-    ).min(1).required()
-  }).required(),
-  ma_email: Joi.string().email().required()
+    ).min(1).optional()
+  }).optional(),
+  ma_email: Joi.string().email().optional()
 }).options({ allowUnknown: true });
 
 // Helpers
