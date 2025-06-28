@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  webhook:
+    container_name: webhook-tilda
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - API_URL=${API_URL}  # Берется из .env файла хоста
+      - API_TIMEOUT=5000
+      - LOG_LEVEL=info
+    restart: unless-stopped
+    networks:
+      - my_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/webhook"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  my_network:
+    external: true
