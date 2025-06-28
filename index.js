@@ -136,6 +136,9 @@ app.get("/webhook", (req, res) => {
 });
 
 app.post("/webhook", async (req, res) => {
+  logger.info('API request successful', {
+    message: `${req.body}`,
+  })
   try {
     // Validation
     const { error, value } = orderSchema.validate(req.body);
