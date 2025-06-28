@@ -137,7 +137,7 @@ app.get("/webhook", (req, res) => {
 
 app.post("/webhook", async (req, res) => {
   logger.info('API request successful', {
-    message: `${req.body}`,
+    message: `${req.body.toString()}`,
   })
   try {
     // Validation
