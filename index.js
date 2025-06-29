@@ -51,6 +51,7 @@ app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'combined', {
 // Validation schemas
 const orderSchema = Joi.object({
   test: Joi.string().optional(),
+  "Name": Joi.string().optional(),
   payment: Joi.object({
     amount: Joi.number().optional(),
     orderid: Joi.string().optional(),
@@ -88,7 +89,7 @@ const formatProductLine = (product) => {
 const createTransactionItem = (orderData) => ({
   total: orderData.payment.amount,
   date: format(new Date(), "dd.MM.yyyy"),
-  email: orderData.ma_email,
+  email: orderData["Name"],
   id: orderData.payment.orderid,
   items: orderData.payment.products.map(formatProductLine).join(""),
 });
@@ -101,7 +102,7 @@ const sendToApi = async (transactionItem) => {
       },
       timeout: API_TIMEOUT,
       httpsAgent: new (require('https').Agent)({
-        rejectUnauthorized: NODE_ENV !== 'development'
+        rejectUnauthorized: false
       })
     });
 
@@ -136,8 +137,7 @@ app.get("/webhook", (req, res) => {
 });
 
 app.post("/webhook", async (req, res) => {
-  logger.info('API request successful', JSON.stringify(req.body))
-  console.log(JSON.stringify(req.body))
+  logger.info('API request successful', JSON.stringify(req.body).toString())
   try {
     // Validation
     const { error, value } = orderSchema.validate(req.body);
