@@ -48,6 +48,7 @@ app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'combined', {
   stream: { write: (message) => logger.info(message.trim()) }
 }));
 
+
 // Validation schemas
 const orderSchema = Joi.object({
   test: Joi.string().optional(),
@@ -137,7 +138,9 @@ app.get("/webhook", (req, res) => {
 });
 
 app.post("/webhook", async (req, res) => {
-  logger.info('API request successful', JSON.stringify(req.body).toString())
+  logger.info(`API request successful`, {
+    order: JSON.stringify(req.body).toString()
+  })
   try {
     // Validation
     const { error, value } = orderSchema.validate(req.body);
@@ -169,7 +172,7 @@ app.post("/webhook", async (req, res) => {
       });
     }
 
-    logger.info('Processing order', { orderId: transactionItem.id });
+    logger.info('Processing order', { transactionItem: transactionItem });
 
     // Send to external API
     const { success, data, error: apiError } = await sendToApi(transactionItem);
